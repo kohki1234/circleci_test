@@ -1,4 +1,4 @@
 
 
 +task1:
-    echo>: 'aaaaaa'
+    echo>: 'circl_ci_test'
