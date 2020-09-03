@@ -1,0 +1,63 @@
+# version: 2.1
+# executors:
+#   my_executor:
+#     docker:
+#       - image: circleci/openjdk:8
+
+# jobs:
+#   digdag:
+#     executor: my_executor
+#     steps:
+#       - checkout
+#       - run:
+#           name: Setup
+#           command: |
+#               mkdir -p ~/bin/
+#               curl -o ~/bin/digdag -L "https://dl.digdag.io/digdag-latest"
+#               chmod +x ~/bin/digdag
+#               echo 'export PATH="$HOME/bin:$PATH"' >> $BASH_ENV
+#       - run:
+#           name: Check config
+#           command: digdag check
+#       - run:
+#           name: Push project
+#           command: digdag push $WF_PROJECT -e api-workflow.treasuredata.com -X client.http.headers.authorization="TD1 $TD_API_KEY" -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
+
+# workflows:
+#   version: 2
+#   build-n-deploy:
+#     jobs:
+#       - digdag
+#       # If you would like to restrict branches/tags to running Digdag jobs, use `filters` option.
+#       # Following filter means `digdag` job will run only `dev` and `user-` starting branches.
+#       # @see: https://circleci.com/docs/2.0/workflows/
+#       #  - digdag:
+#       #      filters:
+#       #        branches:
+#       #          only:
+#       #            - dev
+#       #            - /user-.*/
+machine:
+  timezone: UTC
+  java:
+    version: oraclejdk8
+
+dependencies:
+  override:
+    - mkdir -p ~/bin/
+    - curl -o ~/bin/digdag -L "https://dl.digdag.io/digdag-latest"
+    - chmod +x ~/bin/digdag
+
+test:
+  override:
+    - digdag check
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - >
+        digdag push $(basename $(git rev-parse --show-toplevel))
+        -e api-workflow.treasuredata.com
+        -X client.http.headers.authorization="TD1 $TD_API_KEY"
+        -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
