@@ -1,4 +1,4 @@
 
 
 +task1:
-    echo>: 'circl_ci_test'
+    echo>: 'circle CI test 2020-09-03'
