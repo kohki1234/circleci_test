@@ -2,8 +2,8 @@ version: 2.1
 executors:
   my_executor:
     docker:
-      - image: circleci/openjdk:8
-
+      - image: ruby:2.7.2-buster
+ 
 jobs:
   digdag:
     executor: my_executor
@@ -12,17 +12,15 @@ jobs:
       - run:
           name: Setup
           command: |
-              mkdir -p ~/bin/
-              curl -o ~/bin/digdag -L "https://dl.digdag.io/digdag-latest"
-              chmod +x ~/bin/digdag
-              echo 'export PATH="$HOME/bin:$PATH"' >> $BASH_ENV
+              gem install td
+              yes | td -e https://api.treasuredata.com -k dummy wf || true
       - run:
           name: Check config
-          command: digdag check
+          command: cd workflow && td wf check
       - run:
           name: Push project
-          command: digdag push $WF_PROJECT -e api-workflow.treasuredata.com -X client.http.headers.authorization="TD1 $TD_API_KEY" -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
-
+          command: td -e https://api.treasuredata.com -k $TD_API_KEY wf push $WF_PROJECT -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
+ 
 workflows:
   version: 2
   build-n-deploy:
