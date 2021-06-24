@@ -19,7 +19,7 @@ jobs:
 
       - run:
           name: Check config
-          command: cd test_folder && td digdag check
+          command: cd test_folder && digdag check
 
       - run:
           name: Push project
