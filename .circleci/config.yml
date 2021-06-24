@@ -19,11 +19,11 @@ jobs:
 
       - run:
           name: Check config
-          command: cd test_folder && td wf check
+          command: cd test_folder && td digdag check
 
       - run:
           name: Push project
-          command: td -e https://api.treasuredata.com -k $TD_API_KEY wf push $WF_PROJECT -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
+          command:   digdag push test_folder -e https://api-workflow.treasuredata.com -X client.http.headers.authorization="TD1 $TD_API_KEY" -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
 
 workflows:
   version: 2
