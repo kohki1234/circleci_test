@@ -18,12 +18,8 @@ jobs:
               echo 'export PATH="$HOME/bin:$PATH"' >> $BASH_ENV
 
       - run:
-          name: Check config
-          command: cd test_folder && digdag check
-
-      - run:
           name: Push project
-          command:   digdag push test_folder -e https://api-workflow.treasuredata.com -X client.http.headers.authorization="TD1 $TD_API_KEY" -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
+          command: cd unification_test && digdag check && digdag push unification_test -e https://api-workflow.treasuredata.com -X client.http.headers.authorization="TD1 $TD_API_KEY" -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
 
 workflows:
   version: 2
