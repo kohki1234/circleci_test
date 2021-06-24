@@ -16,9 +16,11 @@ jobs:
               curl -o ~/bin/digdag -L "https://dl.digdag.io/digdag-latest"
               chmod +x ~/bin/digdag
               echo 'export PATH="$HOME/bin:$PATH"' >> $BASH_ENV
+
       - run:
           name: Check config
-          command: cd workflow && td wf check
+          command: cd test_folder && td wf check
+
       - run:
           name: Push project
           command: td -e https://api.treasuredata.com -k $TD_API_KEY wf push $WF_PROJECT -r `date -u +"%Y-%m-%dT%H:%M:%SZ"`-`git rev-parse HEAD`
